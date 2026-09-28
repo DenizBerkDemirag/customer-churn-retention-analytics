@@ -2,15 +2,17 @@ import pandas as pd
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
-RAW_CHURN_DATA_PATH = PROJECT_ROOT / "data" / "raw" / "telco_customer_churn.csv"
-RAW_ZIP_DATA_PATH = PROJECT_ROOT / "data" / "raw" / "telecom_zipcode_popuplation.csv"
+RAW_CHURN_DATA_PATH = PROJECT_ROOT / "data" / "raw" / "telecom_customer_churn.csv"
+RAW_ZIP_DATA_PATH = PROJECT_ROOT / "data" / "raw" / "telecom_zipcode_population.csv"
 CLEANED_DATA_PATH = PROJECT_ROOT / "data" / "cleaned"
+
+CLEANED_DATA_PATH.mkdir(parents=True, exist_ok=True)
 
 df_churn = pd.read_csv(RAW_CHURN_DATA_PATH)
 df_zip = pd.read_csv(RAW_ZIP_DATA_PATH)
 
 # 2. Negatif Monthly Charge Düzeltmesi
-mask_neg = df_churn["MonthlyCharge"] < 0
+mask_neg = df_churn["Monthly Charge"] < 0
 df_churn.loc[mask_neg, "Monthly Charge"] = (
     df_churn.loc[mask_neg, "Total Charges"] / df_churn.loc[mask_neg, "Tenure in Months"]
 ).round(2)
@@ -66,4 +68,4 @@ df_churn["Monthly_ARPU"] = (df_churn["Total Revenue"] / df_churn["Tenure in Mont
 
 df_clean = pd.merge(df_churn, df_zip, how="left")
 
-df_clean.to_csv(CLEANED_DATA_PATH / "cleaned_telco_customer_churn.csv", index=False)
+df_clean.to_csv(CLEANED_DATA_PATH / "cleaned_telecom_customer_churn.csv", index=False)

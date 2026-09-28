@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # 1. Temizlenmiş veriyi oku
-df = pd.read_csv("data/cleaned/cleaned_telco_customer_churn.csv")
+df = pd.read_csv("data/cleaned/cleaned_telecom_customer_churn.csv")
 
 # 2. Tenure_Group sıralamasını sabitle
 order = ['0-6 Ay (Kritik)', '7-12 Ay', '1-2 Yıl', '2-4 Yıl', '4+ Yıl (Sadık)']
@@ -13,7 +13,7 @@ df["Tenure_Group"] = pd.Categorical(df['Tenure_Group'], categories=order, ordere
 summary = df.groupby("Tenure_Group", observed=False).agg(
     Toplam_Musteri=("Customer ID", "count"),
     Churn_Musteri=("Is_Churned", "sum"),
-    Churn_Orani=("Is_Churned", "lambda x: round(x.mean()*100,2)")
+    Churn_Orani=("Is_Churned", lambda x: round(x.mean()*100,2))
 )
 
 # 4. Grafik alanını oluştur (Yan yana 2 grafik)
@@ -41,6 +41,8 @@ for p in axes[0].patches:
     )
 
 # --- GRAFİK 2: Toplam Müşteri ve Kayıp Sayısı ---
+summary = summary.reset_index()
+
 summary_melted = pd.melt(
     summary, 
     id_vars=['Tenure_Group'], 

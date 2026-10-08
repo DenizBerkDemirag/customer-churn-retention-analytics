@@ -2,7 +2,7 @@ import os
 import pandas as pd
 from sqlalchemy import create_engine
 
-csv_path = 'cleaned_telecom_customer_churn.csv'
+csv_path = 'data/cleaned/cleaned_telecom_customer_churn.csv'
 
 if not os.path.exists(csv_path):
     raise FileNotFoundError(f"Dosya bulunamadı: {csv_path}")
@@ -21,8 +21,8 @@ df.columns = [
 ]
 
 # PostgreSQL Bağlantı Dizesi
-db_user = 'Churn_Analysis'
-db_password = 'Churn_Analysis'
+db_user = 'postgres'
+db_password = '123456'
 db_host = 'localhost'
 db_port = '5432'
 db_name = "telecom_dw"
@@ -35,8 +35,6 @@ engine = create_engine(connection_string)
 try:
     print(f"Veriler '{db_name}' veritabanındaki 'stg_telecom_churn' tablosuna aktarılıyor...")
     
-    # if_exists='replace' -> Tablo varsa önce siler, sonra sıfırdan oluşturup doldurur
-    # chunksize=1000 -> Veriyi 1000'er satırlık paketler halinde hızlıca yükler
     df.to_sql('stg_telecom_churn', engine, if_exists='replace', index=False, chunksize=1000)
     
     print("✅ Aktarım başarıyla tamamlandı!")

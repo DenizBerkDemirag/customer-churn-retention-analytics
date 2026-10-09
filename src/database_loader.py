@@ -6,7 +6,7 @@ from sqlalchemy import create_engine
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from config_db import engine
 
-def load_staging_data(csv_file_path: str = "cleaned_telecom_customer_churn.csv"):
+def load_staging_data(csv_file_path: str = "data/cleaned/cleaned_telecom_customer_churn.csv"):
     if not os.path.exists(csv_file_path):
         raise FileNotFoundError(f"Dosya bulunamadı: {csv_file_path}")
 

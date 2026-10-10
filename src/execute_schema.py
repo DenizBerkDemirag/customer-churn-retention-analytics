@@ -14,7 +14,7 @@ def run_sql_pipeline():
     print("🚀 SQL Pipeline başlatılıyor...\n")
     
     with engine.begin() as conn:
-        for file_path in SQL_FILES:
+        for file_path in sql_files:
             if not os.path.exists(file_path):
                 print(f"❌ Dosya bulunamadı: {file_path}")
                 continue

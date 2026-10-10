@@ -1,17 +1,22 @@
 import os
 import sys
+from pathlib import Path
 import pandas as pd
 from sqlalchemy import create_engine
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from config_db import engine
 
-def load_staging_data(csv_file_path: str = "data/cleaned/cleaned_telecom_customer_churn.csv"):
-    if not os.path.exists(csv_file_path):
-        raise FileNotFoundError(f"Dosya bulunamadı: {csv_file_path}")
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+DEFAULT_CSV_PATH = PROJECT_ROOT / "data" / "cleaned" / "cleaned_telecom_customer_churn.csv"
 
-    print(f"1. CSV dosyası okunuyor: {csv_file_path}")
-    df = pd.read_csv(csv_file_path)
+def load_staging_data(csv_file_path: Path | str = DEFAULT_CSV_PATH):
+    csv_path = Path(csv_file_path)
+    if not csv_path.exists():
+        raise FileNotFoundError(f"File not found: {csv_path}")
+
+    print(f"1. Reading cleaned CSV dataset: {csv_path}")
+    df = pd.read_csv(csv_path)
 
     df.columns = [
         col.strip()
@@ -22,7 +27,7 @@ def load_staging_data(csv_file_path: str = "data/cleaned/cleaned_telecom_custome
         for col in df.columns
     ]
 
-    print(f"2. Veriler PostgreSQL 'stg_telecom_churn' tablosuna aktarılıyor (Satır: {len(df):,})...")
+    print(f"2. Loading data into PostgreSQL 'stg_telecom_churn' table (Rows: {len(df):,})...")
     
     df.to_sql(
         name='stg_telecom_churn',
@@ -31,7 +36,7 @@ def load_staging_data(csv_file_path: str = "data/cleaned/cleaned_telecom_custome
         index=False,
         chunksize=1000
     )
-    print("✅ Staging tablosu başarıyla oluşturuldu ve yüklendi!\n")
+    print("Staging table successfully populated and loaded!\n")
 
 if __name__ == "__main__":
     load_staging_data()

@@ -1,6 +1,10 @@
 import os
 import urllib.parse
+from dotenv import load_dotenv
 from sqlalchemy import create_engine
+
+# Load environment variables from .env file
+load_dotenv()
 
 DB_USER = os.getenv("DB_USER", "postgres")
 DB_PASS = os.getenv("DB_PASS", "123456")
